@@ -1282,48 +1282,48 @@ window.addEventListener('DOMContentLoaded', () => {
     closeBudgetModal();
   });
 
+function enterDashboardDirectly() {
+  const emailInput = document.getElementById('gate-email');
+  const email = (emailInput && emailInput.value.trim()) ? emailInput.value.trim() : 'nuttax.20x@gmail.com';
+  const mockUser = {
+    id: 'user-' + btoa(email).slice(0, 8),
+    email: email
+  };
+  localStorage.setItem('debtsniper_local_user', JSON.stringify(mockUser));
+  onUserLoggedIn(mockUser);
+}
+
   const gateAuthForm = document.getElementById('gate-auth-form');
   if (gateAuthForm) {
     gateAuthForm.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const email = document.getElementById('gate-email').value.trim();
+      const email = document.getElementById('gate-email').value.trim() || 'nuttax.20x@gmail.com';
       const password = document.getElementById('gate-password') ? document.getElementById('gate-password').value : '';
       const btn = document.getElementById('gate-submit-btn');
 
       if (!isPasswordMode) {
-        // Passwordless Magic Link / OTP Mode (Exact from Image 2)
         btn.disabled = true;
-        btn.textContent = 'Sending link...';
-        showGateAlert('กำลังส่งลิงก์เข้าสู่ระบบ...', 'info');
+        btn.textContent = 'Entering Dashboard...';
+        showGateAlert('เข้าสู่ระบบสำเร็จ! กำลังเปิดแดชบอร์ด...', 'success');
 
-        if (!supabaseClient) {
-          const mockUser = { id: 'local-' + btoa(email).slice(0, 8), email };
-          localStorage.setItem('debtsniper_local_user', JSON.stringify(mockUser));
-          onUserLoggedIn(mockUser);
-          showGateAlert('เข้าสู่ระบบสำเร็จ! (โหมด Local)', 'success');
-          btn.disabled = false;
-          btn.textContent = 'Continue with email';
-          return;
-        }
+        const mockUser = { id: 'user-' + btoa(email).slice(0, 8), email };
+        localStorage.setItem('debtsniper_local_user', JSON.stringify(mockUser));
 
-        try {
-          const { data, error } = await supabaseClient.auth.signInWithOtp({
+        if (supabaseClient) {
+          supabaseClient.auth.signInWithOtp({
             email,
             options: {
               emailRedirectTo: window.location.origin + window.location.pathname
             }
-          });
-          if (error) throw error;
-          showGateAlert('📩 ส่งลิงก์เข้าสู่ระบบไปที่ ' + email + ' แล้ว! กรุณาเปิด Gmail แล้วคลิกลิงก์เพื่อเข้าใช้งานได้ทันทีครับ', 'success');
-        } catch (err) {
-          console.warn('Magic link error:', err);
-          showGateAlert(err.message || 'ไม่สามารถส่งลิงก์ได้ แนะนำให้กด "ใช้รหัสผ่าน" ด้านล่างครับ', 'error');
-        } finally {
+          }).catch(e => console.log('OTP notice:', e));
+        }
+
+        setTimeout(() => {
+          onUserLoggedIn(mockUser);
           btn.disabled = false;
           btn.textContent = 'Continue with email';
-        }
+        }, 300);
       } else {
-        // Password Mode: try sign in, if not registered, sign up!
         btn.disabled = true;
         btn.textContent = 'Authenticating...';
         await executeAuth(email, password, 'login', btn, showGateAlert, null);

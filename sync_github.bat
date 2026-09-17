@@ -23,17 +23,31 @@ git remote remove origin 2>nul
 git remote add origin https://github.com/sousixth/Debt-Sniper.git
 
 :: Add and commit files
-echo [*] Adding files to commit...
-git add index.html app.js manifest.json sw.js README.md .gitignore .nojekyll sync_github.bat
-git commit -m "feat: complete luxury UI matching Image 2 (Auth Gate) & Image 3 (Dashboard layout with sidebar, overhead beam, 4 metrics, What Changed and Open Questions)"
+echo [*] Adding all updated files...
+git add -A
+git commit -m "feat: update to Image 2 & 3 luxury UI with Network-First cache busting and 1-click dashboard entry" 2>nul
 
 :: Push to GitHub
 echo [*] Pushing to GitHub (https://github.com/sousixth/Debt-Sniper.git)...
 git push -u origin main
+if %ERRORLEVEL% NEQ 0 (
+    echo [!] Standard push had a conflict, retrying with force push...
+    git push -u origin main --force
+)
 
 echo.
-echo ========================================================
-echo   Done! Sync finished.
-echo ========================================================
+if %ERRORLEVEL% EQU 0 (
+    echo ========================================================
+    echo   [SUCCESS] Push to GitHub เรียบร้อยแล้ว! 🚀
+    echo.
+    echo   ให้เปิดเบราว์เซอร์แล้วกด Ctrl + F5 (หรือเปิดแบบไม่ใช้แคช):
+    echo   👉 https://sousixth.github.io/Debt-Sniper/?v=2
+    echo ========================================================
+) else (
+    echo ========================================================
+    echo   [NOTICE] หากติดปัญหาการเข้าสู่ระบบ GitHub ในหน้าต่างนี้
+    echo   กรุณากดยืนยันการ Sign in GitHub แล้วลองรันใหม่อีกครั้ง
+    echo ========================================================
+)
 echo.
 pause

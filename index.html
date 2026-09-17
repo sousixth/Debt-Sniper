@@ -8,6 +8,9 @@
   <meta name="theme-color" content="#07090e">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   
   <!-- Supabase Cloud SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -295,6 +298,11 @@
         <!-- Solid White Button (Exact from image 2) -->
         <button type="submit" id="gate-submit-btn" class="w-full py-3.5 px-6 rounded-full bg-white hover:bg-slate-100 active:scale-[0.98] text-black font-semibold text-sm transition shadow-[0_0_25px_rgba(255,255,255,0.18)]">
           Continue with email
+        </button>
+
+        <!-- Direct Instant Access Button -->
+        <button type="button" onclick="enterDashboardDirectly()" class="w-full py-3 px-5 rounded-2xl bg-[#121724] hover:bg-[#1a2133] active:scale-[0.98] text-emerald-400 font-medium text-xs flex items-center justify-center gap-2 border border-emerald-500/25 shadow-md transition">
+          <span>⚡</span> เข้าดูหน้าแดชบอร์ดทันที (Enter Dashboard Now)
         </button>
       </form>
 
@@ -1008,6 +1016,6 @@
     </div>
   </div>
 
-  <script src="./app.js"></script>
+  <script src="./app.js?v=2.2"></script>
 </body>
 </html>
