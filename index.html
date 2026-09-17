@@ -115,6 +115,32 @@
       box-shadow: 0 30px 70px -15px rgba(0, 0, 0, 0.85), inset 0 1px 1px 0 rgba(255, 255, 255, 0.25);
     }
 
+    /* Image 3 Luxury Dashboard Theme */
+    .luxury-card {
+      background: rgba(13, 17, 26, 0.78);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 24px;
+      box-shadow: 0 20px 45px -15px rgba(0, 0, 0, 0.7), inset 0 1px 1px 0 rgba(255, 255, 255, 0.14);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+    .luxury-card:hover {
+      border-color: rgba(255, 255, 255, 0.16);
+    }
+    .luxury-volumetric-beam {
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 540px;
+      height: 260px;
+      background: radial-gradient(ellipse 65% 55% at 50% 0%, rgba(56, 189, 248, 0.25) 0%, rgba(30, 58, 138, 0.09) 65%, transparent 100%);
+      pointer-events: none;
+      filter: blur(34px);
+      z-index: 1;
+    }
+
     /* Modal Animation */
     .ios-modal-sheet {
       animation: iosSheetAppear 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -172,258 +198,573 @@
     <div class="absolute -bottom-40 left-1/4 w-[38rem] h-[38rem] bg-indigo-500/10 rounded-full blur-[160px]"></div>
   </div>
 
-  <!-- Top Navigation Bar (Frosted Glass Header) -->
-  <header class="sticky top-0 z-40 bg-[#07090e]/60 backdrop-blur-2xl border-b border-white/[0.08] px-4 lg:px-8 py-3.5 transition-all">
-    <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-3 relative z-10">
-      <div class="flex items-center gap-3.5">
-        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-300 flex items-center justify-center text-xl shadow-[0_0_25px_rgba(16,185,129,0.35)] border border-white/25">
-          🎯
-        </div>
+  <!-- Mobile Header Bar (Only visible on small screens when logged in) -->
+  <header id="main-header" class="lg:hidden sticky top-0 z-40 bg-[#06080d]/80 backdrop-blur-xl border-b border-white/[0.08] px-4 py-3 flex items-center justify-between hidden">
+    <div class="flex items-center gap-2.5">
+      <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6"><path d="M4 20L12 5L20 20"/><path d="M8.5 14.5h7"/></svg>
+      <span class="font-semibold text-sm text-white">DebtSniper</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <button onclick="openAddDebtModal()" class="px-3 py-1.5 rounded-full bg-white text-black text-xs font-semibold shadow-sm">
+        + เพิ่มหนี้
+      </button>
+      <button onclick="handleSignOut()" class="p-1.5 rounded-full ios-glass-pill text-slate-400 text-xs">
+        🚪
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= AUTH GATE SCREEN (Exact Image 2 Design) ================= -->
+  <div id="auth-gate-view" class="fixed inset-0 z-50 bg-[#030508] flex items-center justify-center lg:justify-start px-6 sm:px-12 lg:px-24 overflow-hidden">
+    
+    <!-- Ambient Space Horizon Glow & Stars (Right Side Background) -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden z-0">
+      <!-- Stars -->
+      <div class="absolute top-[18%] right-[12%] w-1.5 h-1.5 bg-white/80 rounded-full blur-[0.5px]"></div>
+      <div class="absolute top-[28%] right-[22%] w-1 h-1 bg-white/50 rounded-full"></div>
+      <div class="absolute top-[42%] right-[8%] w-1.5 h-1.5 bg-white/70 rounded-full"></div>
+      <div class="absolute top-[55%] right-[26%] w-1 h-1 bg-white/60 rounded-full"></div>
+      <div class="absolute top-[70%] right-[14%] w-1.5 h-1.5 bg-white/90 rounded-full blur-[0.5px]"></div>
+      <div class="absolute top-[82%] right-[32%] w-1 h-1 bg-white/40 rounded-full"></div>
+      <div class="absolute top-[25%] right-[42%] w-1 h-1 bg-white/50 rounded-full"></div>
+
+      <!-- Glowing Horizon Arc (like in reference image) -->
+      <div class="absolute -bottom-[35vw] -right-[15vw] w-[85vw] h-[85vw] max-w-[950px] max-h-[950px] rounded-full bg-gradient-to-t from-transparent via-[#1d4ed8]/25 to-[#38bdf8]/35 blur-[70px] pointer-events-none"></div>
+      <div class="absolute -bottom-[38vw] -right-[18vw] w-[88vw] h-[88vw] max-w-[980px] max-h-[980px] rounded-full border-t border-sky-400/50 shadow-[0_-20px_70px_rgba(56,189,248,0.45)] pointer-events-none"></div>
+
+      <!-- Insignia floating above the horizon arc -->
+      <div class="hidden lg:flex absolute bottom-[18%] right-[22%] flex-col items-center pointer-events-none">
+        <svg class="w-24 h-24 text-white/90 drop-shadow-[0_0_30px_rgba(255,255,255,0.7)]" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 38L24 12L36 38"/>
+          <path d="M19 28h10"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Left Login Card (Exact Layout from Image 2) -->
+    <div class="relative z-10 w-full max-w-sm sm:max-w-md py-12 flex flex-col justify-center">
+      <!-- Minimalist Chevron Logo -->
+      <div class="mb-8">
+        <svg class="w-9 h-9 text-white drop-shadow-[0_0_20px_rgba(255,255,255,0.5)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 20L12 5L20 20"/>
+          <path d="M8.5 14.5h7"/>
+        </svg>
+      </div>
+
+      <!-- Welcome Title & Subtitle -->
+      <h1 class="text-3xl sm:text-4xl font-normal text-white tracking-tight leading-tight">
+        Welcome to DebtSniper<br>
+        <span class="text-slate-300 font-light">Your numbers are ready.</span>
+      </h1>
+
+      <!-- Alert Notification -->
+      <div id="gate-alert" class="hidden mt-4 p-3.5 rounded-2xl text-xs flex items-center gap-2"></div>
+
+      <!-- Continue with Google Button (Exact from image 2) -->
+      <div class="mt-8">
+        <button type="button" onclick="signInWithGoogle()" class="w-full py-3.5 px-5 rounded-2xl bg-[#121622] hover:bg-[#192030] active:scale-[0.98] text-white font-medium text-sm flex items-center justify-center gap-3 transition border border-white/10 shadow-lg group">
+          <svg class="w-4 h-4 transition group-hover:scale-110" viewBox="0 0 24 24">
+            <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.3 9 5 12 5z"/>
+            <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z"/>
+            <path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.8s.2-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.8 0 12s.7 3.3 1.9 5.7l3.7-2.9z"/>
+            <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.3-6.4-5.2L1.9 16C3.7 19.7 7.5 23 12 23z"/>
+          </svg>
+          <span>Continue with Google</span>
+        </button>
+      </div>
+
+      <!-- Divider (Or) -->
+      <div class="relative my-6">
+        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-white/10"></div></div>
+        <div class="relative flex justify-center text-xs"><span class="px-3 bg-[#030508] text-slate-400 font-medium">Or</span></div>
+      </div>
+
+      <!-- Form (Continue with email) -->
+      <form id="gate-auth-form" class="space-y-4">
         <div>
-          <div class="flex items-center gap-2">
-            <h1 class="font-extrabold text-lg tracking-tight text-white flex items-center gap-1.5">
-              Debt<span class="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">Sniper</span>
-            </h1>
-            <span class="text-[10px] uppercase font-bold tracking-wider px-2.5 py-0.5 rounded-full ios-glass-pill text-emerald-300">
-              VisionOS • PWA
-            </span>
+          <label class="text-xs text-slate-300 block mb-2 font-medium">Email</label>
+          <input type="email" id="gate-email" required value="nuttax.20x@gmail.com" placeholder="work@company.com" class="w-full bg-[#10141f] border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/20 transition">
+        </div>
+
+        <!-- Optional Password Input -->
+        <div id="gate-password-container" class="hidden">
+          <label class="text-xs text-slate-300 block mb-2 font-medium">Password</label>
+          <input type="password" id="gate-password" placeholder="อย่างน้อย 6 ตัวอักษร" class="w-full bg-[#10141f] border border-white/10 rounded-2xl px-4 py-3.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-white/30 focus:ring-1 focus:ring-white/20 transition">
+        </div>
+
+        <!-- Solid White Button (Exact from image 2) -->
+        <button type="submit" id="gate-submit-btn" class="w-full py-3.5 px-6 rounded-full bg-white hover:bg-slate-100 active:scale-[0.98] text-black font-semibold text-sm transition shadow-[0_0_25px_rgba(255,255,255,0.18)]">
+          Continue with email
+        </button>
+      </form>
+
+      <!-- Subtext / Footnote (Exact from image 2) -->
+      <div class="mt-4 text-left">
+        <p class="text-xs text-slate-400 leading-relaxed">
+          No password to remember – we send a secure link.<br>
+          <span class="text-slate-500">New here? The same link creates your account.</span>
+        </p>
+
+        <div class="mt-4 flex items-center justify-between text-[11px] text-slate-500">
+          <button type="button" onclick="togglePasswordMode()" id="btn-toggle-password" class="hover:text-slate-300 underline transition">
+            ใช้รหัสผ่าน (Use Password)
+          </button>
+          <button type="button" onclick="openCloudConfigModal()" class="hover:text-slate-300 underline transition">
+            ⚙️ ตั้งค่า Supabase
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= MAIN DASHBOARD VIEW (Exact Image 3 Design) ================= -->
+  <div id="dashboard-view" class="min-h-screen w-full flex flex-col lg:flex-row relative z-10 hidden bg-[#05070c]">
+    
+    <!-- LEFT SIDEBAR (Matching Image 3) -->
+    <aside class="w-full lg:w-64 shrink-0 bg-[#07090e]/95 lg:bg-[#07090e]/80 backdrop-blur-2xl border-b lg:border-b-0 lg:border-r border-white/[0.07] p-5 flex flex-col justify-between z-20">
+      <div class="space-y-6">
+        <!-- Logo: Chevron mark + DebtSniper -->
+        <div class="flex items-center gap-3 px-2">
+          <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 20L12 5L20 20"/>
+            <path d="M8.5 14.5h7"/>
+          </svg>
+          <span class="font-semibold text-lg tracking-tight text-white">DebtSniper</span>
+        </div>
+
+        <!-- Navigation Menu (Matching Image 3: Home, Ask, Scenarios, Connections) -->
+        <nav class="space-y-1.5" id="sidebar-nav">
+          <!-- Home (Selected in Image 3) -->
+          <button type="button" onclick="switchTab('home')" id="nav-btn-home" class="w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-2xl bg-white/[0.08] text-white text-sm font-medium border border-white/[0.08] shadow-sm transition">
+            <svg class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Home</span>
+          </button>
+
+          <!-- Ask -->
+          <button type="button" onclick="switchTab('ask')" id="nav-btn-ask" class="w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-2xl text-slate-400 hover:text-white hover:bg-white/[0.04] text-sm font-medium transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+            <span>Ask</span>
+          </button>
+
+          <!-- Scenarios -->
+          <button type="button" onclick="switchTab('scenarios')" id="nav-btn-scenarios" class="w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-2xl text-slate-400 hover:text-white hover:bg-white/[0.04] text-sm font-medium transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            <span>Scenarios</span>
+          </button>
+
+          <!-- Connections -->
+          <button type="button" onclick="switchTab('connections')" id="nav-btn-connections" class="w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-2xl text-slate-400 hover:text-white hover:bg-white/[0.04] text-sm font-medium transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            <span>Connections</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Bottom Quick Actions & Profile -->
+      <div class="pt-6 border-t border-white/[0.07] space-y-3 mt-6 lg:mt-0">
+        <button type="button" onclick="openAddDebtModal()" class="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-slate-100 text-black text-xs font-semibold flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(255,255,255,0.15)] transition">
+          <span>+</span> เพิ่มรายการหนี้
+        </button>
+
+        <div class="p-3 rounded-2xl bg-white/[0.03] border border-white/[0.06] flex items-center justify-between">
+          <div class="flex items-center gap-2.5 overflow-hidden">
+            <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-sky-500 to-indigo-500 flex items-center justify-center text-white text-xs font-bold shrink-0 shadow">
+              <span id="user-avatar-letter">G</span>
+            </div>
+            <div class="overflow-hidden">
+              <div class="text-xs font-medium text-white truncate max-w-[110px]" id="user-display-email">User</div>
+              <div class="text-[10px] text-emerald-400 font-medium flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Cloud Synced
+              </div>
+            </div>
           </div>
-          <p class="text-xs text-slate-400">ระบบวางแผนและติดตามการชำระหนี้สู่ชีวิตอิสระ</p>
+          <button type="button" onclick="handleSignOut()" title="ออกจากระบบ" class="text-slate-400 hover:text-rose-400 p-1.5 rounded-lg transition">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- MAIN DASHBOARD CONTENT AREA -->
+    <div class="flex-1 min-w-0 p-5 sm:p-8 lg:p-10 relative overflow-x-hidden">
+      
+      <!-- Volumetric Top Spotlight Beam (from Image 3) -->
+      <div class="luxury-volumetric-beam"></div>
+
+      <!-- ================= TAB 1: HOME (Exact Image 3 Screen) ================= -->
+      <div id="tab-content-home" class="space-y-8 relative z-10">
+        
+        <!-- Header & Top 4 Metrics -->
+        <div class="space-y-6">
+          <!-- Dynamic Greeting matching Image 3: "Tuesday morning, here's where you stand." -->
+          <div class="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <h1 id="greeting-text" class="text-2xl sm:text-3xl lg:text-4xl font-normal text-white tracking-tight leading-tight">
+                Tuesday morning,<br>
+                <span class="text-slate-400 font-light">here's where you stand.</span>
+              </h1>
+            </div>
+
+            <!-- Strategy Toggle -->
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-slate-500 font-medium">Strategy:</span>
+              <div class="inline-flex rounded-full bg-[#0f131f] p-1 border border-white/10">
+                <button type="button" onclick="setStrategy('snowball')" id="strat-snowball" class="px-3.5 py-1 text-xs font-semibold rounded-full bg-emerald-400 text-slate-950 transition shadow-sm">
+                  Snowball
+                </button>
+                <button type="button" onclick="setStrategy('avalanche')" id="strat-avalanche" class="px-3.5 py-1 text-xs font-medium rounded-full text-slate-400 hover:text-white transition">
+                  Avalanche
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Top 4 Metric Cards (Matching Image 3 squircle layout) -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <!-- Metric 1: TOTAL DEBT (corresponds to RUNWAY) -->
+            <div class="luxury-card p-5 sm:p-6 relative overflow-hidden transition hover:border-white/20">
+              <div class="text-[11px] font-semibold uppercase tracking-widest text-slate-400 mb-2">
+                TOTAL DEBT
+              </div>
+              <div class="text-2xl sm:text-3xl font-normal text-white tracking-tight" id="metric-total-debt">
+                ฿70,000
+              </div>
+              <div class="mt-3 flex items-center gap-2">
+                <span id="metric-debt-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> 0% ปลดหนี้แล้ว
+                </span>
+              </div>
+            </div>
+
+            <!-- Metric 2: SNIPER AMMO (corresponds to CASH) -->
+            <div class="luxury-card p-5 sm:p-6 relative overflow-hidden transition hover:border-white/20">
+              <div class="text-[11px] font-semibold uppercase tracking-widest text-slate-400 mb-2">
+                SNIPER AMMO
+              </div>
+              <div class="text-2xl sm:text-3xl font-normal text-white tracking-tight flex items-baseline gap-1" id="metric-ammo-container">
+                <span id="metric-ammo-val">฿7,000</span> <span class="text-sm font-light text-slate-400">/mo</span>
+              </div>
+              <div class="mt-3 flex items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-sky-500/10 text-sky-400 border border-sky-500/20" id="metric-ammo-badge">
+                  +฿2,000 vs min pay
+                </span>
+              </div>
+            </div>
+
+            <!-- Metric 3: MIN PAYMENTS (corresponds to BURN • 3MO AVG) -->
+            <div class="luxury-card p-5 sm:p-6 relative overflow-hidden transition hover:border-white/20">
+              <div class="text-[11px] font-semibold uppercase tracking-widest text-slate-400 mb-2">
+                MIN PAYMENTS
+              </div>
+              <div class="text-2xl sm:text-3xl font-normal text-white tracking-tight flex items-baseline gap-1">
+                <span id="metric-min-pay">฿3,500</span> <span class="text-sm font-light text-slate-400">/mo</span>
+              </div>
+              <div class="mt-3 flex items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-amber-500/10 text-amber-400 border border-amber-500/20" id="metric-debts-count-badge">
+                  3 active debts
+                </span>
+              </div>
+            </div>
+
+            <!-- Metric 4: DEBT-FREE TARGET (corresponds to NET CHANGE • 30D) -->
+            <div class="luxury-card p-5 sm:p-6 relative overflow-hidden transition hover:border-white/20">
+              <div class="text-[11px] font-semibold uppercase tracking-widest text-slate-400 mb-2">
+                DEBT-FREE TARGET
+              </div>
+              <div class="text-2xl sm:text-3xl font-normal text-white tracking-tight truncate" id="metric-freedom-date">
+                Nov 2026
+              </div>
+              <div class="mt-3 flex items-center gap-2">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  Improving
+                </span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Lower Section: 2 Columns Matching Image 3 (WHAT CHANGED & YOUR OPEN QUESTIONS) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          
+          <!-- Column 1: WHAT CHANGED (Debts list with glowing green dots & ↗ arrows) -->
+          <div class="luxury-card p-6 sm:p-7 space-y-5">
+            <div class="flex items-center justify-between">
+              <h2 class="text-xs font-bold uppercase tracking-widest text-slate-400">
+                WHAT CHANGED
+              </h2>
+              <button type="button" onclick="openAddDebtModal()" class="text-xs text-slate-400 hover:text-white transition flex items-center gap-1">
+                <span>+ เพิ่มรายการ</span>
+              </button>
+            </div>
+
+            <!-- Debt target cards dynamically populated matching image 3 -->
+            <div id="what-changed-list" class="space-y-3.5">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Column 2: YOUR OPEN QUESTIONS (Interactive Cards with [ ? ] amber badges) -->
+          <div class="luxury-card p-6 sm:p-7 space-y-5">
+            <div class="flex items-center justify-between">
+              <h2 class="text-xs font-bold uppercase tracking-widest text-slate-400">
+                YOUR OPEN QUESTIONS
+              </h2>
+              <span class="text-xs text-slate-500">3 recommendations</span>
+            </div>
+
+            <!-- Question Cards Matching Image 3 -->
+            <div class="space-y-3.5">
+              <!-- Q1 -->
+              <div onclick="switchTab('scenarios')" class="p-4 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] transition cursor-pointer group">
+                <div class="flex items-start gap-3.5">
+                  <div class="w-6 h-6 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-300 font-bold text-xs shrink-0 mt-0.5 group-hover:scale-110 transition">
+                    ?
+                  </div>
+                  <div class="space-y-1">
+                    <p class="text-sm font-medium text-white group-hover:text-amber-200 transition">
+                      "ถ้าโปะเพิ่มเดือนละ ฿2,000 จะปลดหนี้เร็วขึ้นเท่าไหร่?"
+                    </p>
+                    <p class="text-xs text-slate-400 leading-relaxed" id="q-sim-preview">
+                      คำนวณแล้ว: ปลดหนี้เร็วขึ้นทันที ~2.5 เดือน และประหยัดดอกเบี้ย ฿2,480
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Q2 -->
+              <div onclick="toggleStrategyPrompt()" class="p-4 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] transition cursor-pointer group">
+                <div class="flex items-start gap-3.5">
+                  <div class="w-6 h-6 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-300 font-bold text-xs shrink-0 mt-0.5 group-hover:scale-110 transition">
+                    ?
+                  </div>
+                  <div class="space-y-1">
+                    <p class="text-sm font-medium text-white group-hover:text-amber-200 transition">
+                      "Snowball vs Avalanche กลยุทธ์ไหนเหมาะกับเราที่สุด?"
+                    </p>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                      Snowball ช่วยปิดบัตรใบแรกใน 2 เดือนสร้างกำลังใจ, Avalanche ช่วยประหยัดดอกเบี้ยสูงสุด
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Q3 -->
+              <div onclick="openBudgetModal()" class="p-4 rounded-2xl bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.06] transition cursor-pointer group">
+                <div class="flex items-start gap-3.5">
+                  <div class="w-6 h-6 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-300 font-bold text-xs shrink-0 mt-0.5 group-hover:scale-110 transition">
+                    ?
+                  </div>
+                  <div class="space-y-1">
+                    <p class="text-sm font-medium text-white group-hover:text-amber-200 transition">
+                      "ล็อกเงินเดือน ฿31,000 ยังไงไม่ให้หลุดกดบัตรซ้ำ?"
+                    </p>
+                    <p class="text-xs text-slate-400 leading-relaxed">
+                      กันเงินสำรองฉุกเฉิน ฿1,000 ใส่บัญชีไม่มีบัตร ATM ทันทีในวันเงินเดือนออก
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Quick AI Query Bar -->
+              <div class="pt-2">
+                <div class="flex items-center gap-2 p-2 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
+                  <input type="text" id="ai-quick-query" placeholder="Ask anything about your numbers..." class="w-full bg-transparent px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none">
+                  <button type="button" onclick="askAIPrompt()" class="px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-100 text-black text-xs font-semibold shrink-0 transition">
+                    Ask
+                  </button>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- ================= TAB 2: ASK (Financial Advisor) ================= -->
+      <div id="tab-content-ask" class="space-y-6 relative z-10 hidden">
+        <div class="luxury-card p-6 sm:p-8 space-y-6">
+          <div class="flex items-center gap-3 border-b border-white/[0.08] pb-5">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500/20 to-sky-500/20 border border-white/10 flex items-center justify-center text-lg">
+              ✦
+            </div>
+            <div>
+              <h2 class="text-lg font-bold text-white">DebtSniper Financial Advisor</h2>
+              <p class="text-xs text-slate-400">ผู้ช่วยวิเคราะห์สถานะหนี้ วางแผนกระแสเงินสด และประเมินสถานการณ์เฉพาะบุคคล</p>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            <div class="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06]">
+              <div class="text-xs font-semibold text-emerald-300 mb-1 flex items-center gap-1.5">
+                <span>🤖</span> แนะนำขั้นตอนถัดไปสำหรับหนี้ ฿70,000 ของคุณ:
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed" id="ai-advisor-text">
+                จากเงินเดือน ฿31,000 และงบกินอยู่ ฿21,000 คุณมีเงินสำหรับยิงหนี้เดือนละ ฿9,000 เมื่อหักขั้นต่ำของบัตรอื่น ฿2,750 คุณจะมีกระสุนสไนเปอร์เต็มเม็ดเต็มหน่วย <b>฿6,250 - ฿7,000/เดือน</b> แนะนำให้ทุ่มยิงปิด "บัตรกดเงินสด Speedy" ให้หมดเป็นใบแรกภายในเวลาเพียง 2-3 เดือน จากนั้นยอดผ่อนขั้นต่ำจะลดลงทันที ทำให้กระสุนเดือนถัดไปใหญ่ขึ้นเป็น Snowball Effect!
+              </p>
+            </div>
+
+            <div class="flex gap-2">
+              <input type="text" id="ask-input-box" placeholder="พิมพ์คำถาม เช่น ถ้าได้โบนัส 20,000 บาทควรโปะใบไหนก่อนดี?" class="w-full ios-glass-input rounded-2xl px-4 py-3 text-xs sm:text-sm text-white focus:outline-none focus:border-emerald-400">
+              <button type="button" onclick="handleCustomAsk()" class="px-5 py-3 rounded-2xl bg-white text-black font-semibold text-xs sm:text-sm shrink-0 hover:bg-slate-100 transition">
+                ส่งคำถาม
+              </button>
+            </div>
+
+            <div id="ask-response-box" class="hidden p-4 rounded-2xl bg-sky-500/10 border border-sky-500/20 text-xs text-sky-200 leading-relaxed"></div>
+          </div>
         </div>
       </div>
 
-      <!-- Action Buttons (Glass Pills) -->
-      <div class="flex items-center flex-wrap gap-2.5">
-        <!-- User Cloud Login / Profile -->
-        <div id="auth-nav-container">
-          <button id="btn-open-login" onclick="openAuthModal()" class="px-4 py-2 rounded-full ios-glass-pill hover:bg-white/10 text-xs sm:text-sm font-medium text-emerald-300 flex items-center gap-1.5 transition-all hover:scale-105 active:scale-95 border border-emerald-500/30">
-            <span>👤</span> เข้าสู่ระบบ
-          </button>
-          
-          <div id="user-logged-box" class="relative group hidden">
-            <button class="px-3.5 py-2 rounded-full ios-glass-pill text-xs sm:text-sm font-semibold text-emerald-300 flex items-center gap-1.5 hover:bg-white/10 border border-emerald-500/30 transition">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span id="user-display-email" class="max-w-[110px] sm:max-w-[150px] truncate text-slate-200">User</span>
-              <span class="text-[10px] text-slate-400">▾</span>
-            </button>
-            <div class="absolute right-0 mt-2 w-52 ios-glass-modal rounded-2xl shadow-2xl py-1.5 hidden group-hover:block z-50">
-              <div class="px-4 py-2 border-b border-white/10">
-                <span class="text-[10px] text-slate-400 block">เข้าสู่ระบบด้วย:</span>
-                <span id="user-full-email" class="text-xs font-semibold text-white break-all">user@mail.com</span>
+      <!-- ================= TAB 3: SCENARIOS (Cashflow Shield & Simulator) ================= -->
+      <div id="tab-content-scenarios" class="space-y-6 relative z-10 hidden">
+        
+        <!-- Cashflow Shield & Ammo Allocator -->
+        <div class="luxury-card p-6 sm:p-8 space-y-6">
+          <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] pb-4">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-emerald-500/20 flex items-center justify-center text-lg border border-white/10">
+                🛡️
               </div>
-              <button onclick="forceCloudSync()" class="w-full text-left px-4 py-2.5 text-xs text-emerald-300 hover:bg-white/10 flex items-center gap-2.5 transition">
-                <span>🔄</span> ซิงก์ข้อมูลเดี๋ยวนี้ (Sync)
-              </button>
-              <button onclick="openCloudConfigModal()" class="w-full text-left px-4 py-2.5 text-xs text-slate-300 hover:bg-white/10 flex items-center gap-2.5 transition">
-                <span>⚙️</span> ตั้งค่า Cloud (Supabase)
-              </button>
-              <div class="border-t border-white/10 my-1"></div>
-              <button onclick="handleSignOut()" class="w-full text-left px-4 py-2.5 text-xs text-rose-400 hover:bg-rose-500/10 flex items-center gap-2.5 transition">
-                <span>🚪</span> ออกจากระบบ (Sign Out)
-              </button>
+              <div>
+                <h2 class="font-bold text-white text-base">Cashflow Shield • จัดสรรกระแสเงินสดรายเดือน</h2>
+                <p class="text-xs text-slate-400">ล็อกงบเอาชีวิตรอด เพื่อสกัดเงินติดลบ และคำนวณกระสุนสไนเปอร์</p>
+              </div>
+            </div>
+            <button type="button" onclick="openBudgetModal()" class="text-xs font-semibold px-4 py-2 rounded-full ios-glass-pill text-emerald-300 hover:bg-white/10 transition">
+              แก้ไขสัดส่วน
+            </button>
+          </div>
+
+          <!-- Step-by-step Flow Visualizer -->
+          <div class="grid grid-cols-1 sm:grid-cols-4 gap-3.5 text-center">
+            <div class="p-4 rounded-2xl bg-black/25 border border-white/5">
+              <span class="text-[11px] text-slate-400 block mb-1">1. เงินเดือนรับสุทธิ</span>
+              <span class="text-lg font-black text-white" id="cashflow-salary-val">฿31,000</span>
+              <span class="text-[10px] text-slate-500 block mt-0.5">รายรับหลัก</span>
+            </div>
+            <div class="p-4 rounded-2xl bg-black/25 border border-white/5">
+              <span class="text-[11px] text-slate-400 block mb-1">2. งบกินอยู่จำเป็น</span>
+              <span class="text-lg font-bold text-rose-400" id="cashflow-survival-val">-฿21,000</span>
+              <span class="text-[10px] text-slate-500 block mt-0.5">ค่าห้อง, กิน, เดินทาง</span>
+            </div>
+            <div class="p-4 rounded-2xl bg-black/25 border border-white/5">
+              <span class="text-[11px] text-slate-400 block mb-1">3. สำรองฉุกเฉิน (Buffer)</span>
+              <span class="text-lg font-bold text-amber-400" id="cashflow-buffer-val">-฿1,000</span>
+              <span class="text-[10px] text-slate-500 block mt-0.5">ห้ามแตะ กันกดบัตรซ้ำ</span>
+            </div>
+            <div class="p-4 rounded-2xl bg-emerald-500/10 border border-emerald-500/30">
+              <span class="text-[11px] text-emerald-300 block mb-1 font-semibold">4. กระสุนสไนเปอร์โปะหนี้</span>
+              <span class="text-xl font-black text-emerald-400" id="cashflow-ammo-val">฿7,000</span>
+              <span class="text-[10px] text-emerald-300/80 block mt-0.5">ทุ่มยิงเป้าหมายแรก!</span>
+            </div>
+          </div>
+
+          <!-- Dynamic Status Alert Box -->
+          <div id="cashflow-alert-box" class="p-4 rounded-2xl ios-glass text-xs flex items-start gap-3">
+            <!-- Loaded via app.js -->
+          </div>
+        </div>
+
+        <!-- Interactive Payoff Simulator -->
+        <div class="luxury-card p-6 sm:p-8 space-y-5">
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.08] pb-4">
+            <div>
+              <h2 class="font-bold text-white text-base flex items-center gap-2">
+                <span>🚀</span> Simulator • ถ้ามีเงินมาช่วยโปะเพิ่ม จะเร็วขึ้นแค่ไหน?
+              </h2>
+              <p class="text-xs text-slate-400">จำลองว่าหากทำ OT หรือประหยัดเพิ่มได้ในแต่ละเดือน จะปลดหนี้เร็วขึ้นเท่าไหร่</p>
+            </div>
+            <span class="text-xs font-bold text-emerald-300 ios-glass-pill px-3.5 py-1.5 rounded-full" id="disp-extra-ammo">
+              +฿0 / เดือน
+            </span>
+          </div>
+
+          <div>
+            <input type="range" id="sim-extra-slider" min="0" max="10000" step="500" value="0"
+                   class="w-full accent-emerald-400 cursor-pointer h-2 bg-black/40 rounded-lg">
+            <div class="flex justify-between text-[11px] text-slate-400 mt-2">
+              <span>+฿0 (ตามแผนเดิม)</span>
+              <span>+฿5,000 (รับงานเสริม/ลดค่าใช้จ่าย)</span>
+              <span>+฿10,000 (สปีดสูงสุด)</span>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-2 text-center">
+            <div class="p-4 bg-black/25 rounded-2xl border border-white/5">
+              <span class="text-[11px] text-slate-400 block mb-0.5">ระยะเวลาปลดหนี้ทั้งหมด</span>
+              <span class="text-xl font-black text-emerald-400" id="sim-result-months">8</span>
+              <span class="text-[10px] text-slate-400 block">เดือน</span>
+            </div>
+            <div class="p-4 bg-black/25 rounded-2xl border border-white/5">
+              <span class="text-[11px] text-slate-400 block mb-0.5">ดอกเบี้ยรวมที่ต้องจ่าย</span>
+              <span class="text-lg font-bold text-amber-400" id="sim-result-interest">฿5,800</span>
+              <span class="text-[10px] text-slate-400 block">บาท</span>
+            </div>
+            <div class="p-4 bg-black/25 rounded-2xl border border-white/5 sm:col-span-1 flex items-center justify-center">
+              <span class="text-xs text-slate-300 font-medium leading-relaxed" id="sim-result-saved">
+                จำลองการเพิ่มรายได้หรือประหยัดค่าใช้จ่ายมาโปะเพิ่ม
+              </span>
             </div>
           </div>
         </div>
 
-        <button onclick="openBudgetModal()" class="px-4 py-2 rounded-full ios-glass-pill hover:bg-white/10 text-xs sm:text-sm font-medium text-slate-200 flex items-center gap-1.5 transition-all hover:scale-105 active:scale-95">
-          <span>⚙️</span> จัดการงบประมาณ
-        </button>
-        <button onclick="openAddDebtModal()" class="px-5 py-2 rounded-full bg-gradient-to-r from-emerald-400 via-teal-400 to-cyan-400 hover:from-emerald-300 hover:to-cyan-300 text-xs sm:text-sm font-semibold text-slate-950 shadow-[0_0_25px_rgba(16,185,129,0.4)] flex items-center gap-1.5 transition-all hover:scale-105 active:scale-95">
-          <span>+</span> เพิ่มหนี้
-        </button>
-        <div class="relative group">
-          <button class="p-2.5 rounded-full ios-glass-pill hover:bg-white/10 text-slate-300 text-xs transition-all hover:scale-105">
-            ⋯
-          </button>
-          <div class="absolute right-0 mt-2 w-48 ios-glass-modal rounded-2xl shadow-2xl py-1.5 hidden group-hover:block z-50">
-            <button onclick="exportData()" class="w-full text-left px-4 py-2.5 text-xs text-slate-200 hover:bg-white/10 flex items-center gap-2.5 transition">
-              <span>💾</span> สำรองข้อมูล (Backup)
+      </div>
+
+      <!-- ================= TAB 4: CONNECTIONS (Supabase & Cloud Sync) ================= -->
+      <div id="tab-content-connections" class="space-y-6 relative z-10 hidden">
+        <div class="luxury-card p-6 sm:p-8 space-y-6">
+          <div class="flex items-center gap-3 border-b border-white/[0.08] pb-5">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-500/20 to-teal-500/20 border border-white/10 flex items-center justify-center text-lg">
+              🔗
+            </div>
+            <div>
+              <h2 class="text-lg font-bold text-white">Connections & Cloud Sync</h2>
+              <p class="text-xs text-slate-400">สถานะการเชื่อมต่อบัญชี Google และ Supabase Cloud Database</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <!-- Google Auth Status -->
+            <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.06] space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Account</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">ACTIVE</span>
+              </div>
+              <div class="text-base font-medium text-white truncate" id="conn-user-email">nuttax.20x@gmail.com</div>
+              <p class="text-xs text-slate-400">เข้าสู่ระบบด้วย Google Account ข้อมูลถูกผูกกับบัญชีนี้อย่างปลอดภัย</p>
+            </div>
+
+            <!-- Supabase Database Status -->
+            <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.06] space-y-3">
+              <div class="flex items-center justify-between">
+                <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Database</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-500/20 text-sky-300 border border-sky-500/30">SUPABASE</span>
+              </div>
+              <div class="text-base font-medium text-white">user_debts (RLS Enabled)</div>
+              <p class="text-xs text-slate-400">ซิงก์แบบ Real-time ข้ามมือถือและคอมพิวเตอร์ของคุณอัตโนมัติ</p>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-3 pt-2">
+            <button type="button" onclick="forceCloudSync()" class="px-5 py-2.5 rounded-full bg-white text-black font-semibold text-xs transition hover:bg-slate-100">
+              ⚡ ซิงก์ข้อมูลขึ้น Cloud เดี๋ยวนี้
             </button>
-            <label class="w-full text-left px-4 py-2.5 text-xs text-slate-200 hover:bg-white/10 flex items-center gap-2.5 cursor-pointer transition">
-              <span>📥</span> นำเข้าข้อมูล (Import)
-              <input type="file" accept=".json" onchange="importData(this.files[0])" class="hidden">
-            </label>
-            <div class="border-t border-white/10 my-1"></div>
-            <button onclick="resetToDefaults()" class="w-full text-left px-4 py-2.5 text-xs text-rose-400 hover:bg-rose-500/10 flex items-center gap-2.5 transition">
-              <span>🔄</span> รีเซ็ตข้อมูลเริ่มต้น
+            <button type="button" onclick="openCloudConfigModal()" class="px-5 py-2.5 rounded-full ios-glass-pill text-white text-xs font-medium transition hover:bg-white/10">
+              ⚙️ ตั้งค่าคีย์ Supabase
+            </button>
+            <button type="button" onclick="exportDataJSON()" class="px-5 py-2.5 rounded-full ios-glass-pill text-slate-300 text-xs font-medium transition hover:bg-white/10">
+              💾 สำรองข้อมูล (JSON Backup)
             </button>
           </div>
         </div>
       </div>
+
     </div>
-  </header>
-
-  <main class="max-w-6xl mx-auto px-4 lg:px-8 mt-6 space-y-6 relative z-10">
-
-    <!-- Overview 4 Metrics Grid (Frosted Glass Cards) -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <!-- Metric 1: Total Debt -->
-      <div class="p-5 rounded-[26px] ios-glass relative overflow-hidden transition-all duration-300 hover:border-white/20">
-        <div class="flex items-center justify-between text-xs text-slate-400 mb-1.5">
-          <span>หนี้คงเหลือรวม</span>
-          <span class="text-rose-400 font-semibold flex items-center gap-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-rose-400 animate-ping"></span> วิ่งอยู่
-          </span>
-        </div>
-        <div class="text-2xl sm:text-3xl font-black text-white tracking-tight" id="metric-total-debt">฿70,000</div>
-        <!-- Glass Progress Bar -->
-        <div class="mt-4">
-          <div class="w-full h-2 bg-black/40 rounded-full overflow-hidden p-0.5 border border-white/5">
-            <div id="metric-overall-progress" class="h-full bg-gradient-to-r from-emerald-400 to-teal-300 rounded-full transition-all duration-500 shadow-[0_0_12px_rgba(16,185,129,0.5)]" style="width: 0%"></div>
-          </div>
-          <span class="text-[11px] text-slate-400 mt-1.5 block font-medium" id="metric-progress-text">0% ปลดหนี้แล้ว</span>
-        </div>
-      </div>
-
-      <!-- Metric 2: Current Sniper Target -->
-      <div class="p-5 rounded-[26px] ios-glass-target relative overflow-hidden transition-all duration-300">
-        <div class="flex items-center justify-between text-xs text-emerald-300 mb-1.5 font-semibold">
-          <span class="flex items-center gap-1.5">🎯 เป้าหมายสไนเปอร์ #1</span>
-          <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-400/20 text-emerald-300 border border-emerald-400/30">LOCKED</span>
-        </div>
-        <div class="text-base sm:text-lg font-bold text-white truncate" id="metric-target-name">บัตรกดเงินสด Speedy</div>
-        <div class="text-xs sm:text-sm text-emerald-300 mt-1 font-semibold" id="metric-target-balance">คงเหลือ ฿15,000</div>
-      </div>
-
-      <!-- Metric 3: Total Monthly Min Payment -->
-      <div class="p-5 rounded-[26px] ios-glass transition-all duration-300 hover:border-white/20">
-        <div class="flex items-center justify-between text-xs text-slate-400 mb-1.5">
-          <span>ยอดขั้นต่ำรวมทุกใบ</span>
-          <span class="text-amber-400 font-medium">ผ่อนประจำ</span>
-        </div>
-        <div class="text-2xl sm:text-3xl font-black text-amber-400 tracking-tight" id="metric-min-pay">฿3,500</div>
-        <p class="text-[11px] text-slate-400 mt-2">ยอดนี้จะลดลงทันทีเมื่อยิงปิดได้ทีละใบ</p>
-      </div>
-
-      <!-- Metric 4: Est Debt-Free Date -->
-      <div class="p-5 rounded-[26px] ios-glass transition-all duration-300 hover:border-white/20">
-        <div class="flex items-center justify-between text-xs text-slate-400 mb-1.5">
-          <span>คาดการณ์วันปลอดหนี้</span>
-          <span class="text-cyan-400 font-medium">อิสรภาพ</span>
-        </div>
-        <div class="text-base sm:text-lg font-black text-cyan-300 tracking-tight" id="metric-freedom-date">อีก 8 เดือน</div>
-        <p class="text-[11px] text-slate-400 mt-2">หากจ่ายตามสูตรสไนเปอร์นี้ต่อเนื่อง</p>
-      </div>
-    </div>
-
-    <!-- Cashflow Shield & Ammo Allocator -->
-    <div class="p-6 rounded-[28px] ios-glass space-y-4">
-      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/[0.08] pb-4">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-500/20 to-emerald-500/20 flex items-center justify-center text-lg border border-white/10">
-            🛡️
-          </div>
-          <div>
-            <h2 class="font-bold text-white text-sm sm:text-base">Cashflow Shield • จัดสรรกระแสเงินสดรายเดือน</h2>
-            <p class="text-xs text-slate-400">ล็อกงบเอาชีวิตรอด เพื่อสกัดเงินติดลบ และคำนวณกระสุนสไนเปอร์</p>
-          </div>
-        </div>
-        <button onclick="openBudgetModal()" class="text-xs font-semibold px-3 py-1.5 rounded-full ios-glass-pill text-emerald-300 hover:bg-white/10 transition">
-          แก้ไขสัดส่วน
-        </button>
-      </div>
-
-      <!-- Step-by-step Flow Visualizer -->
-      <div class="grid grid-cols-1 sm:grid-cols-4 gap-3.5 text-center">
-        <div class="p-3.5 rounded-2xl bg-black/20 border border-white/5">
-          <span class="text-[11px] text-slate-400 block mb-1">1. เงินเดือนรับสุทธิ</span>
-          <span class="text-base sm:text-lg font-black text-white" id="cashflow-salary-val">฿31,000</span>
-          <span class="text-[10px] text-slate-500 block mt-0.5">รายรับหลัก</span>
-        </div>
-        <div class="p-3.5 rounded-2xl bg-black/20 border border-white/5">
-          <span class="text-[11px] text-slate-400 block mb-1">2. งบกินอยู่จำเป็น (Survival)</span>
-          <span class="text-base sm:text-lg font-bold text-rose-400" id="cashflow-survival-val">-฿21,000</span>
-          <span class="text-[10px] text-slate-500 block mt-0.5">ค่าห้อง, กิน, เดินทาง</span>
-        </div>
-        <div class="p-3.5 rounded-2xl bg-black/20 border border-white/5">
-          <span class="text-[11px] text-slate-400 block mb-1">3. สำรองฉุกเฉิน (Buffer)</span>
-          <span class="text-base sm:text-lg font-bold text-amber-400" id="cashflow-buffer-val">-฿1,000</span>
-          <span class="text-[10px] text-slate-500 block mt-0.5">ห้ามแตะ กันกดบัตรซ้ำ</span>
-        </div>
-        <div class="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30">
-          <span class="text-[11px] text-emerald-300 block mb-1 font-semibold">4. กระสุนสไนเปอร์โปะหนี้</span>
-          <span class="text-lg sm:text-xl font-black text-emerald-400" id="cashflow-ammo-val">฿7,000</span>
-          <span class="text-[10px] text-emerald-300/80 block mt-0.5">ทุ่มยิงเป้าหมายที่ 1!</span>
-        </div>
-      </div>
-
-      <!-- Dynamic Status Alert Box -->
-      <div id="cashflow-alert-box" class="p-3.5 rounded-2xl ios-glass text-xs flex items-start gap-3">
-        <!-- Loaded via app.js -->
-      </div>
-    </div>
-
-    <!-- Strategy Selector & Target Cards Section -->
-    <div class="space-y-4">
-      <div class="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h2 class="font-bold text-white text-base sm:text-lg flex items-center gap-2">
-            <span>🎯</span> บอร์ดจัดลำดับสไนเปอร์ (Sniper Board)
-          </h2>
-          <p class="text-xs text-slate-400">ระบบจะจัดเรียงเป้าหมายที่ต้องปิดให้โดยอัตโนมัติ</p>
-        </div>
-
-        <!-- Strategy Toggle Segmented Control -->
-        <div class="ios-glass-pill p-1 rounded-full flex items-center gap-1">
-          <button onclick="setStrategy('snowball')" id="strat-snowball" class="px-4 py-1.5 text-xs font-semibold rounded-full bg-emerald-400 text-slate-950 shadow-[0_0_15px_rgba(16,185,129,0.3)] transition">
-            ❄️ Snowball (ก้อนเล็กก่อน)
-          </button>
-          <button onclick="setStrategy('avalanche')" id="strat-avalanche" class="px-4 py-1.5 text-xs font-medium rounded-full text-slate-300 hover:text-white transition">
-            ⚡ Avalanche (ดอกเบี้ยแพงก่อน)
-          </button>
-        </div>
-      </div>
-
-      <!-- Debts Grid -->
-      <div id="debts-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <!-- Injected dynamically via app.js -->
-      </div>
-    </div>
-
-    <!-- Interactive Payoff Simulator (Vision Glass) -->
-    <div class="p-6 rounded-[28px] ios-glass space-y-4">
-      <div class="flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <h2 class="font-bold text-white text-sm sm:text-base flex items-center gap-2">
-            <span>🚀</span> Simulator • ถ้ามีเงินมาช่วยโปะเพิ่ม จะเร็วขึ้นแค่ไหน?
-          </h2>
-          <p class="text-xs text-slate-400">จำลองว่าหากทำ OT หรือประหยัดเพิ่มได้ในแต่ละเดือน จะปลดหนี้เร็วขึ้นเท่าไหร่</p>
-        </div>
-        <span class="text-xs font-bold text-emerald-300 ios-glass-pill px-3.5 py-1 rounded-full" id="disp-extra-ammo">
-          +฿0 / เดือน
-        </span>
-      </div>
-
-      <div>
-        <input type="range" id="sim-extra-slider" min="0" max="10000" step="500" value="0"
-               class="w-full accent-emerald-400 cursor-pointer h-2 bg-black/40 rounded-lg">
-        <div class="flex justify-between text-[11px] text-slate-400 mt-1.5">
-          <span>+฿0 (ตามแผนเดิม)</span>
-          <span>+฿5,000 (รับงานเสริม/ลดค่าใช้จ่าย)</span>
-          <span>+฿10,000 (สปีดสูงสุด)</span>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3.5 pt-2 text-center">
-        <div class="p-3.5 bg-black/20 rounded-2xl border border-white/5">
-          <span class="text-[11px] text-slate-400 block mb-0.5">ระยะเวลาปลดหนี้ทั้งหมด</span>
-          <span class="text-lg sm:text-xl font-black text-emerald-400" id="sim-result-months">8</span>
-          <span class="text-[10px] text-slate-400 block">เดือน</span>
-        </div>
-        <div class="p-3.5 bg-black/20 rounded-2xl border border-white/5">
-          <span class="text-[11px] text-slate-400 block mb-0.5">ดอกเบี้ยรวมที่ต้องจ่าย</span>
-          <span class="text-base sm:text-lg font-bold text-amber-400" id="sim-result-interest">฿5,800</span>
-          <span class="text-[10px] text-slate-400 block">บาท</span>
-        </div>
-        <div class="p-3.5 bg-black/20 rounded-2xl border border-white/5 sm:col-span-1 flex items-center justify-center">
-          <span class="text-xs text-slate-300 font-medium" id="sim-result-saved">
-            จำลองการเพิ่มรายได้หรือประหยัดค่าใช้จ่ายมาโปะเพิ่ม
-          </span>
-        </div>
-      </div>
-    </div>
-
-  </main>
+  </div>
 
   <!-- ================= MODALS (VisionOS Floating Sheets) ================= -->
 
@@ -610,6 +951,21 @@
           เข้าสู่ระบบทันที
         </button>
       </form>
+
+      <div class="relative my-4">
+        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-white/10"></div></div>
+        <div class="relative flex justify-center text-[11px]"><span class="px-2.5 py-0.5 bg-[#0f1422] text-slate-400 rounded-full border border-white/10">หรือ</span></div>
+      </div>
+
+      <button type="button" onclick="signInWithGoogle()" class="w-full py-2.5 px-4 rounded-full ios-glass hover:bg-white/10 text-xs sm:text-sm font-semibold text-white flex items-center justify-center gap-2.5 transition border border-white/15 shadow-sm">
+        <svg class="w-4 h-4" viewBox="0 0 24 24">
+          <path fill="#EA4335" d="M12 5c1.6 0 3 .6 4.1 1.7l3.1-3.1C17.3 1.8 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.3 9 5 12 5z"/>
+          <path fill="#4285F4" d="M23.5 12.3c0-.8-.1-1.7-.2-2.3H12v4.6h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.9z"/>
+          <path fill="#FBBC05" d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.8s.2-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.8 0 12s.7 3.3 1.9 5.7l3.7-2.9z"/>
+          <path fill="#34A853" d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.3-6.4-5.2L1.9 16C3.7 19.7 7.5 23 12 23z"/>
+        </svg>
+        <span>เข้าสู่ระบบด้วย Google (Gmail)</span>
+      </button>
 
       <div class="pt-4 border-t border-white/10 mt-4 flex items-center justify-between text-[11px] text-slate-400">
         <span>ข้อมูลของคุณจะซิงก์ข้ามเครื่องอัตโนมัติ</span>

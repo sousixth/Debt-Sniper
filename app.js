@@ -358,204 +358,282 @@ function simulateSnowballPayoff(extraMonthly = 0) {
   };
 }
 
-// UI Renderers
+// UI Renderers & Image 3 Experience
+function updateGreeting() {
+  const greetingEl = document.getElementById('greeting-text');
+  if (!greetingEl) return;
+
+  const now = new Date();
+  const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const dayName = days[now.getDay()];
+
+  const hour = now.getHours();
+  let timeOfDay = 'morning';
+  if (hour >= 12 && hour < 17) {
+    timeOfDay = 'afternoon';
+  } else if (hour >= 17 && hour < 21) {
+    timeOfDay = 'evening';
+  } else if (hour >= 21 || hour < 5) {
+    timeOfDay = 'night';
+  }
+
+  greetingEl.innerHTML = `${dayName} ${timeOfDay},<br><span class="text-slate-400 font-light">here's where you stand.</span>`;
+}
+
+function switchTab(tab) {
+  const tabs = ['home', 'ask', 'scenarios', 'connections'];
+  tabs.forEach(t => {
+    const btn = document.getElementById('nav-btn-' + t);
+    const content = document.getElementById('tab-content-' + t);
+    if (t === tab) {
+      if (btn) {
+        btn.className = 'w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-2xl bg-white/[0.08] text-white text-sm font-medium border border-white/[0.08] shadow-sm transition';
+      }
+      if (content) content.classList.remove('hidden');
+    } else {
+      if (btn) {
+        btn.className = 'w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-2xl text-slate-400 hover:text-white hover:bg-white/[0.04] text-sm font-medium transition';
+      }
+      if (content) content.classList.add('hidden');
+    }
+  });
+}
+
 function renderDashboard() {
   const summary = calculateSummary();
   const sim = simulateSnowballPayoff(0);
 
-  // Top metric values
-  document.getElementById('metric-total-debt').textContent = '฿' + summary.totalDebt.toLocaleString();
-  document.getElementById('metric-overall-progress').style.width = summary.overallProgress.toFixed(1) + '%';
-  document.getElementById('metric-progress-text').textContent = summary.overallProgress.toFixed(0) + '% ปลดหนี้แล้ว';
+  // Dynamic greeting matching Image 3
+  updateGreeting();
 
-  // Target card widget
-  const targetNameEl = document.getElementById('metric-target-name');
-  const targetBalEl = document.getElementById('metric-target-balance');
-  if (summary.currentTarget) {
-    targetNameEl.textContent = summary.currentTarget.name;
-    targetBalEl.textContent = 'คงเหลือ ฿' + summary.currentTarget.currentBalance.toLocaleString();
-  } else {
-    targetNameEl.textContent = '🎉 ปลอดหนี้ 100% แล้ว!';
-    targetBalEl.textContent = 'ยอดเยี่ยมที่สุด!';
+  // Top metric values (Image 3 squircle cards)
+  const totalDebtEl = document.getElementById('metric-total-debt');
+  if (totalDebtEl) totalDebtEl.textContent = '฿' + summary.totalDebt.toLocaleString();
+
+  const debtBadge = document.getElementById('metric-debt-badge');
+  if (debtBadge) {
+    debtBadge.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> ${summary.overallProgress.toFixed(0)}% ปลดหนี้แล้ว`;
   }
 
-  // Min payment & Debt Free Date
-  document.getElementById('metric-min-pay').textContent = '฿' + summary.totalMinPayment.toLocaleString();
+  // Ammo card
+  const ammoValEl = document.getElementById('metric-ammo-val');
+  if (ammoValEl) ammoValEl.textContent = '฿' + summary.sniperAmmo.toLocaleString();
 
+  const ammoBadge = document.getElementById('metric-ammo-badge');
+  if (ammoBadge) {
+    ammoBadge.textContent = summary.currentTarget 
+      ? `Target: ${summary.currentTarget.name.split(' ')[0]}` 
+      : 'ปลดหนี้ครบแล้ว!';
+  }
+
+  // Min Payments
+  const minPayEl = document.getElementById('metric-min-pay');
+  if (minPayEl) minPayEl.textContent = '฿' + summary.totalMinPayment.toLocaleString();
+
+  const debtsCountBadge = document.getElementById('metric-debts-count-badge');
+  if (debtsCountBadge) debtsCountBadge.textContent = `${summary.activeCount} active debts`;
+
+  // Est Freedom Date
   const freedomDate = new Date();
   freedomDate.setMonth(freedomDate.getMonth() + sim.months);
-  const thaiMonths = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+  const engMonths = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const freedomStr = sim.months > 0 
-    ? `${thaiMonths[freedomDate.getMonth()]} ${freedomDate.getFullYear() + 543} (อีก ${sim.months} เดือน)`
-    : 'ปลอดหนี้แล้ว!';
-  document.getElementById('metric-freedom-date').textContent = freedomStr;
+    ? `${engMonths[freedomDate.getMonth()]} ${freedomDate.getFullYear()}`
+    : 'Debt-Free!';
+  const freedomEl = document.getElementById('metric-freedom-date');
+  if (freedomEl) freedomEl.textContent = freedomStr;
 
-  // Cashflow Shield Card
-  document.getElementById('cashflow-salary-val').textContent = '฿' + state.budget.salary.toLocaleString();
-  document.getElementById('cashflow-survival-val').textContent = '฿' + state.budget.survivalBudget.toLocaleString();
-  document.getElementById('cashflow-buffer-val').textContent = '฿' + state.budget.emergencyBuffer.toLocaleString();
-  document.getElementById('cashflow-ammo-val').textContent = '฿' + summary.sniperAmmo.toLocaleString();
+  // Cashflow Shield Card (in Scenarios Tab)
+  const salaryEl = document.getElementById('cashflow-salary-val');
+  if (salaryEl) salaryEl.textContent = '฿' + state.budget.salary.toLocaleString();
+
+  const survivalEl = document.getElementById('cashflow-survival-val');
+  if (survivalEl) survivalEl.textContent = '฿' + state.budget.survivalBudget.toLocaleString();
+
+  const bufferEl = document.getElementById('cashflow-buffer-val');
+  if (bufferEl) bufferEl.textContent = '฿' + state.budget.emergencyBuffer.toLocaleString();
+
+  const ammoValEl2 = document.getElementById('cashflow-ammo-val');
+  if (ammoValEl2) ammoValEl2.textContent = '฿' + summary.sniperAmmo.toLocaleString();
 
   const cashflowAlert = document.getElementById('cashflow-alert-box');
-  if (summary.cashflowStatus === 'healthy') {
-    cashflowAlert.className = 'p-4 rounded-2xl ios-glass border border-emerald-500/30 text-emerald-300 text-xs sm:text-sm flex items-start gap-3';
-    cashflowAlert.innerHTML = `
-      <span class="text-lg">🛡️</span>
-      <div>
-        <b class="font-semibold text-emerald-200">กระแสเงินสดเป็นบวก!</b> คุณมีกระสุนสไนเปอร์เดือนละ <b>฿${summary.sniperAmmo.toLocaleString()}</b> สำหรับยิงปิดหนี้เป้าหมายแรก ดำเนินการตามแผนจะปลดหนี้ทั้งหมดได้ใน <b>${sim.months} เดือน</b>
-      </div>
-    `;
-  } else {
-    cashflowAlert.className = 'p-4 rounded-2xl ios-glass border border-rose-500/40 text-rose-300 text-xs sm:text-sm flex items-start gap-3';
-    cashflowAlert.innerHTML = `
-      <span class="text-lg">⚠️</span>
-      <div>
-        <b class="font-semibold text-rose-200">กระแสเงินสดติดลบ!</b> เงินที่เหลือไม่พอจ่ายขั้นต่ำรวม (ขาดอีก ฿${(summary.totalMinPayment - summary.netDebtAttackFund).toLocaleString()}) ให้กดปรับลดงบกินอยู่ หรือเริ่มเจรจาปรับโครงสร้างหนี้
-      </div>
-    `;
+  if (cashflowAlert) {
+    if (summary.cashflowStatus === 'healthy') {
+      cashflowAlert.className = 'p-4 rounded-2xl ios-glass border border-emerald-500/30 text-emerald-300 text-xs sm:text-sm flex items-start gap-3';
+      cashflowAlert.innerHTML = `
+        <span class="text-lg">🛡️</span>
+        <div>
+          <b class="font-semibold text-emerald-200">กระแสเงินสดเป็นบวก!</b> คุณมีกระสุนสไนเปอร์เดือนละ <b>฿${summary.sniperAmmo.toLocaleString()}</b> สำหรับยิงปิดหนี้เป้าหมายแรก ดำเนินการตามแผนจะปลดหนี้ทั้งหมดได้ใน <b>${sim.months} เดือน</b>
+        </div>
+      `;
+    } else {
+      cashflowAlert.className = 'p-4 rounded-2xl ios-glass border border-rose-500/40 text-rose-300 text-xs sm:text-sm flex items-start gap-3';
+      cashflowAlert.innerHTML = `
+        <span class="text-lg">⚠️</span>
+        <div>
+          <b class="font-semibold text-rose-200">กระแสเงินสดติดลบ!</b> เงินที่เหลือไม่พอจ่ายขั้นต่ำรวม (ขาดอีก ฿${(summary.totalMinPayment - summary.netDebtAttackFund).toLocaleString()}) ให้กดปรับลดงบกินอยู่ หรือเริ่มเจรจาปรับโครงสร้างหนี้
+        </div>
+      `;
+    }
   }
 
-  // Update Strategy Buttons (iOS Segmented Style)
+  // Update Strategy Buttons (Segmented Style)
   const btnSnowball = document.getElementById('strat-snowball');
   const btnAvalanche = document.getElementById('strat-avalanche');
   if (btnSnowball && btnAvalanche) {
     if (state.strategy === 'snowball') {
-      btnSnowball.className = 'px-4 py-1.5 text-xs font-semibold rounded-full bg-emerald-400 text-slate-950 shadow-[0_0_15px_rgba(16,185,129,0.3)] transition';
-      btnAvalanche.className = 'px-4 py-1.5 text-xs font-medium rounded-full text-slate-300 hover:text-white transition';
+      btnSnowball.className = 'px-3.5 py-1 text-xs font-semibold rounded-full bg-emerald-400 text-slate-950 transition shadow-sm';
+      btnAvalanche.className = 'px-3.5 py-1 text-xs font-medium rounded-full text-slate-400 hover:text-white transition';
     } else {
-      btnAvalanche.className = 'px-4 py-1.5 text-xs font-semibold rounded-full bg-emerald-400 text-slate-950 shadow-[0_0_15px_rgba(16,185,129,0.3)] transition';
-      btnSnowball.className = 'px-4 py-1.5 text-xs font-medium rounded-full text-slate-300 hover:text-white transition';
+      btnAvalanche.className = 'px-3.5 py-1 text-xs font-semibold rounded-full bg-emerald-400 text-slate-950 transition shadow-sm';
+      btnSnowball.className = 'px-3.5 py-1 text-xs font-medium rounded-full text-slate-400 hover:text-white transition';
     }
   }
 
-  // Render Debts List
+  // Update Question 1 Simulation Preview
+  const qSim = simulateSnowballPayoff(2000);
+  const qMonthsCut = Math.max(0, sim.months - qSim.months);
+  const qIntSaved = Math.max(0, sim.totalInterest - qSim.totalInterest);
+  const qSimEl = document.getElementById('q-sim-preview');
+  if (qSimEl) {
+    qSimEl.textContent = `คำนวณแล้ว: ปลดหนี้เร็วขึ้นทันที ~${qMonthsCut} เดือน และประหยัดดอกเบี้ย ฿${qIntSaved.toLocaleString()}`;
+  }
+
+  // Render Debts List into WHAT CHANGED
   renderDebtsList();
   renderSimulator();
 }
 
 function renderDebtsList() {
-  const container = document.getElementById('debts-container');
-  if (!container) return;
-
+  const whatChangedContainer = document.getElementById('what-changed-list');
   const { activeDebts, paidDebts } = getSortedDebts();
-  container.innerHTML = '';
+  const summary = calculateSummary();
 
-  if (activeDebts.length === 0 && paidDebts.length === 0) {
-    container.innerHTML = `
-      <div class="col-span-full text-center py-12 rounded-[28px] ios-glass">
-        <p class="text-slate-400 text-sm">ยังไม่มีรายการหนี้ในระบบ</p>
-        <button onclick="openAddDebtModal()" class="mt-3 px-5 py-2 rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 text-slate-950 text-xs sm:text-sm font-semibold shadow-md">
-          + เพิ่มรายการหนี้แรก
-        </button>
-      </div>
-    `;
+  if (whatChangedContainer) {
+    whatChangedContainer.innerHTML = '';
+
+    if (activeDebts.length === 0 && paidDebts.length === 0) {
+      whatChangedContainer.innerHTML = `
+        <div class="text-center py-8 rounded-2xl bg-white/[0.02] border border-white/[0.05]">
+          <p class="text-xs text-slate-400 mb-3">ยังไม่มีรายการหนี้ในระบบ</p>
+          <button type="button" onclick="openAddDebtModal()" class="px-4 py-2 rounded-full bg-white text-black text-xs font-semibold hover:bg-slate-100 transition shadow-sm">
+            + เพิ่มรายการหนี้แรก
+          </button>
+        </div>
+      `;
+    } else {
+      // Image 3 Exact List Layout: Glowing green dot • title, action arrow ↗, and subtitle details
+      activeDebts.forEach((debt, index) => {
+        const isTarget = index === 0;
+        const item = document.createElement('div');
+        item.className = 'p-4 rounded-2xl bg-white/[0.02] hover:bg-white/[0.05] border border-white/[0.05] transition cursor-pointer group';
+        item.onclick = () => openMakePaymentModal(debt.id);
+
+        item.innerHTML = `
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex items-start gap-3">
+              <!-- Glowing Green Dot (Image 3 exact spec) -->
+              <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399] mt-1.5 shrink-0"></span>
+              <div class="space-y-1">
+                <div class="text-sm font-semibold text-white group-hover:text-emerald-300 transition flex flex-wrap items-center gap-2">
+                  <span>${debt.name}</span>
+                  <span class="text-slate-400 font-normal">฿${debt.currentBalance.toLocaleString()}</span>
+                  ${isTarget ? '<span class="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/30">LOCKED TARGET #1</span>' : ''}
+                </div>
+                <p class="text-xs text-slate-400 leading-relaxed">
+                  ${isTarget 
+                    ? `เป้าหมายยิงทลาย #1: ผ่อนขั้นต่ำ ฿${debt.minPayment.toLocaleString()} + กระสุน ฿${summary.sniperAmmo.toLocaleString()} (รวม ฿${(debt.minPayment + summary.sniperAmmo).toLocaleString()}/ด.) • ดอกเบี้ย ${debt.apr}%` 
+                    : `คิวที่ ${index + 1}: ผ่อนขั้นต่ำ ฿${debt.minPayment.toLocaleString()}/ด. (ดอกเบี้ย ${debt.apr}% • ตัดรอบวันที่ ${debt.dueDate})`}
+                </p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <button type="button" onclick="event.stopPropagation(); openEditDebtModal('${debt.id}')" title="แก้ไข" class="text-slate-500 hover:text-white p-1 rounded-lg transition text-xs">
+                ✏️
+              </button>
+              <span class="text-slate-400 group-hover:text-emerald-300 transition font-light text-base">↗</span>
+            </div>
+          </div>
+        `;
+        whatChangedContainer.appendChild(item);
+      });
+
+      if (paidDebts.length > 0) {
+        const paidItem = document.createElement('div');
+        paidItem.className = 'p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-between mt-2';
+        paidItem.innerHTML = `
+          <div class="flex items-center gap-2.5">
+            <span class="text-emerald-400 text-sm">🏆</span>
+            <div>
+              <span class="text-xs font-semibold text-emerald-300">ปลดหนี้สำเร็จแล้ว ${paidDebts.length} บัญชี!</span>
+              <span class="text-[11px] text-slate-400 block">ได้เงินค่างวดคืนกลับมา ฿${paidDebts.reduce((s, d) => s + d.minPayment, 0).toLocaleString()}/เดือน</span>
+            </div>
+          </div>
+          <span class="text-xs text-emerald-400 font-medium">ปลอดหนี้แล้ว</span>
+        `;
+        whatChangedContainer.appendChild(paidItem);
+      }
+    }
+  }
+}
+
+// Question Interactions
+function toggleStrategyPrompt() {
+  const nextStrat = state.strategy === 'snowball' ? 'avalanche' : 'snowball';
+  setStrategy(nextStrat);
+  alert(`สลับกลยุทธ์เป็น ${nextStrat === 'snowball' ? 'Snowball (ก้อนเล็กก่อน)' : 'Avalanche (ดอกเบี้ยแพงก่อน)'} เรียบร้อยแล้ว! ดูการจัดลำดับเป้าหมายใหม่ใน WHAT CHANGED ได้เลยครับ`);
+}
+
+function askAIPrompt() {
+  const input = document.getElementById('ai-quick-query');
+  if (!input || !input.value.trim()) {
+    switchTab('ask');
     return;
   }
+  const query = input.value.trim();
+  switchTab('ask');
+  const askInput = document.getElementById('ask-input-box');
+  if (askInput) askInput.value = query;
+  handleCustomAsk();
+}
 
-  // Active Debts
-  activeDebts.forEach((debt, index) => {
-    const isTarget = index === 0;
-    const progress = debt.originalBalance > 0 
-      ? Math.max(0, Math.min(100, ((debt.originalBalance - debt.currentBalance) / debt.originalBalance) * 100))
-      : 0;
+function handleCustomAsk() {
+  const input = document.getElementById('ask-input-box');
+  const box = document.getElementById('ask-response-box');
+  if (!input || !box) return;
+  const q = input.value.trim();
+  if (!q) return;
 
-    const card = document.createElement('div');
-    card.className = `relative rounded-[28px] p-5 sm:p-6 transition-all duration-300 ${
-      isTarget 
-        ? 'ios-glass-target' 
-        : 'ios-glass hover:border-white/20'
-    }`;
+  const summary = calculateSummary();
+  const sim = simulateSnowballPayoff(0);
 
-    card.innerHTML = `
-      ${isTarget ? `
-        <div class="absolute -top-3 left-6 bg-gradient-to-r from-emerald-400 to-teal-300 text-slate-950 text-[11px] font-black px-3.5 py-0.5 rounded-full flex items-center gap-1.5 shadow-[0_0_15px_rgba(16,185,129,0.4)]">
-          <span>🎯</span> LOCKED TARGET #1 (เป้าหมายยิงทลาย)
-        </div>
-      ` : `
-        <div class="absolute -top-2.5 left-6 ios-glass-pill text-slate-300 text-[10px] font-medium px-3 py-0.5 rounded-full">
-          คิวที่ ${index + 1} (จ่ายขั้นต่ำรอ)
-        </div>
-      `}
+  box.classList.remove('hidden');
+  box.innerHTML = `
+    <div class="font-semibold text-sky-100 mb-1">คำถาม: "${q}"</div>
+    <div class="mb-1">วิเคราะห์จากตัวเลขหนี้คงเหลือปัจจุบัน <b>฿${summary.totalDebt.toLocaleString()}</b> (กระสุนสไนเปอร์ <b>฿${summary.sniperAmmo.toLocaleString()}/เดือน</b>):</div>
+    <ul class="list-disc list-inside space-y-1 text-slate-300">
+      <li>กลยุทธ์ที่แนะนำ: ยิงปิดหนี้ <b>${summary.currentTarget ? summary.currentTarget.name : 'เป้าหมายแรก'}</b> ให้หมดก่อนเพื่อสกัดดอกเบี้ยและลดค่างวดขั้นต่ำ</li>
+      <li>หากมีเงินก้อนหรือโบนัส ให้ทุ่มลงที่เป้าหมายแรกโดยตรง ไม่กระจายจ่าย จะเร่งวันหมดหนี้ได้เร็วที่สุด</li>
+      <li>ระยะเวลาปลอดหนี้ตามแผนปัจจุบันคืออีก <b>${sim.months} เดือน</b></li>
+    </ul>
+  `;
+}
 
-      <div class="flex items-start justify-between gap-2 mt-2">
-        <div>
-          <h3 class="font-bold text-white text-base sm:text-lg">${debt.name}</h3>
-          <p class="text-xs text-slate-400 mt-0.5">ดอกเบี้ย ${debt.apr}% • ชำระทุกวันที่ ${debt.dueDate} ของเดือน</p>
-        </div>
-        <div class="flex items-center gap-1.5">
-          <button onclick="openEditDebtModal('${debt.id}')" title="แก้ไข" class="w-8 h-8 rounded-full ios-glass-pill flex items-center justify-center text-slate-300 hover:text-white transition">
-            ✏️
-          </button>
-          <button onclick="deleteDebt('${debt.id}')" title="ลบ" class="w-8 h-8 rounded-full ios-glass-pill flex items-center justify-center text-slate-300 hover:text-rose-400 transition">
-            🗑️
-          </button>
-        </div>
-      </div>
-
-      <!-- Balances Card -->
-      <div class="grid grid-cols-2 gap-2 mt-4 bg-black/25 p-3.5 rounded-2xl border border-white/5">
-        <div>
-          <span class="text-[10px] text-slate-400 block mb-0.5">ยอดคงเหลือ</span>
-          <span class="text-base sm:text-lg font-black text-white">฿${debt.currentBalance.toLocaleString()}</span>
-        </div>
-        <div class="text-right">
-          <span class="text-[10px] text-slate-400 block mb-0.5">ขั้นต่ำต่อเดือน</span>
-          <span class="text-sm sm:text-base font-bold text-amber-400">฿${debt.minPayment.toLocaleString()}</span>
-        </div>
-      </div>
-
-      <!-- Progress bar -->
-      <div class="mt-4">
-        <div class="flex justify-between text-[11px] text-slate-400 mb-1.5">
-          <span>ลดไปแล้ว ${progress.toFixed(0)}%</span>
-          <span>จาก ฿${debt.originalBalance.toLocaleString()}</span>
-        </div>
-        <div class="w-full h-2 bg-black/40 rounded-full overflow-hidden p-0.5 border border-white/5">
-          <div class="h-full bg-gradient-to-r from-emerald-400 to-teal-300 rounded-full transition-all duration-300 shadow-[0_0_10px_rgba(16,185,129,0.4)]" style="width: ${progress}%"></div>
-        </div>
-      </div>
-
-      <!-- Action Buttons -->
-      <div class="grid grid-cols-2 gap-2.5 mt-5 pt-3 border-t border-white/[0.08]">
-        <button onclick="openMakePaymentModal('${debt.id}')" class="w-full py-2.5 px-3 rounded-full ios-glass-pill hover:bg-white/10 text-white text-xs sm:text-sm font-medium flex items-center justify-center gap-1.5 transition">
-          <span>💸</span> บันทึกโปะหนี้
-        </button>
-        <button onclick="eliminateDebt('${debt.id}')" class="w-full py-2.5 px-3 rounded-full bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-400/40 text-emerald-300 text-xs sm:text-sm font-semibold flex items-center justify-center gap-1.5 shadow-[0_0_15px_rgba(16,185,129,0.2)] transition">
-          <span>🎯</span> ปิดยอดนี้เลย!
-        </button>
-      </div>
-    `;
-
-    container.appendChild(card);
-  });
-
-  // Paid Off Debts Hall of Fame
-  if (paidDebts.length > 0) {
-    const hallOfFame = document.createElement('div');
-    hallOfFame.className = 'col-span-full mt-4 p-6 rounded-[28px] ios-glass border border-emerald-500/30 bg-emerald-950/15';
-    hallOfFame.innerHTML = `
-      <div class="flex items-center justify-between mb-3.5">
-        <h4 class="text-sm sm:text-base font-bold text-emerald-300 flex items-center gap-2">
-          <span>🏆</span> บัญชีที่ปลดหนี้สำเร็จแล้ว (${paidDebts.length} บัญชี)
-        </h4>
-        <span class="text-xs text-emerald-400 font-medium">ได้เงินค่างวดคืนกลับมา ฿${paidDebts.reduce((s, d) => s + d.minPayment, 0).toLocaleString()}/เดือน!</span>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        ${paidDebts.map(d => `
-          <div class="p-3.5 rounded-2xl bg-black/30 border border-emerald-500/30 flex items-center justify-between">
-            <div>
-              <span class="text-xs font-bold text-white line-through opacity-70">${d.name}</span>
-              <span class="text-[11px] text-emerald-400 block font-medium">ปิดยอด ฿${d.originalBalance.toLocaleString()} สำเร็จ!</span>
-            </div>
-            <button onclick="restoreDebt('${d.id}')" title="นำกลับมาแก้ไข" class="text-xs text-slate-300 hover:text-white px-3 py-1 ios-glass-pill rounded-full transition">
-              ↩️ คืนสถานะ
-            </button>
-          </div>
-        `).join('')}
-      </div>
-    `;
-    container.appendChild(hallOfFame);
-  }
+function exportDataJSON() {
+  const exportData = {
+    debts: state.debts,
+    budget: state.budget,
+    strategy: state.strategy,
+    history: state.history,
+    exportedAt: new Date().toISOString()
+  };
+  const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `debtsniper-backup-${new Date().toISOString().slice(0, 10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
 }
 
 // Interactive Simulator Renderer
@@ -855,10 +933,26 @@ function onUserLoggedIn(user) {
   const name = user.email ? user.email.split('@')[0] : 'User';
   const dispEl = document.getElementById('user-display-email');
   const fullEl = document.getElementById('user-full-email');
+  const connEmail = document.getElementById('conn-user-email');
+  const avatarLetter = document.getElementById('user-avatar-letter');
+
   if (dispEl) dispEl.textContent = name;
   if (fullEl) fullEl.textContent = user.email;
+  if (connEmail) connEmail.textContent = user.email;
+  if (avatarLetter && user.email) avatarLetter.textContent = user.email[0].toUpperCase();
+
+  // Toggle views: Unlock and reveal dashboard, hide auth gate
+  const authGate = document.getElementById('auth-gate-view');
+  const dashboard = document.getElementById('dashboard-view');
+  const headerActions = document.getElementById('header-actions-container');
+  const mainHeader = document.getElementById('main-header');
+  if (authGate) authGate.classList.add('hidden');
+  if (dashboard) dashboard.classList.remove('hidden');
+  if (headerActions) headerActions.classList.remove('hidden');
+  if (mainHeader) mainHeader.classList.remove('hidden');
 
   fetchCloudData();
+  renderDashboard();
 }
 
 function onUserLoggedOut() {
@@ -867,6 +961,16 @@ function onUserLoggedOut() {
   const userBox = document.getElementById('user-logged-box');
   if (btnLogin) btnLogin.classList.remove('hidden');
   if (userBox) userBox.classList.add('hidden');
+
+  // Toggle views: Lock and show auth gate, hide dashboard
+  const authGate = document.getElementById('auth-gate-view');
+  const dashboard = document.getElementById('dashboard-view');
+  const headerActions = document.getElementById('header-actions-container');
+  const mainHeader = document.getElementById('main-header');
+  if (authGate) authGate.classList.remove('hidden');
+  if (dashboard) dashboard.classList.add('hidden');
+  if (headerActions) headerActions.classList.add('hidden');
+  if (mainHeader) mainHeader.classList.add('hidden');
 }
 
 async function fetchCloudData() {
@@ -962,16 +1066,114 @@ function setAuthMode(mode) {
   }
 }
 
-function showAuthAlert(msg, type = 'error') {
-  const alertBox = document.getElementById('auth-alert');
+let gateAuthMode = 'login';
+
+function setGateAuthMode(mode) {
+  gateAuthMode = mode;
+  const tabLogin = document.getElementById('gate-tab-login');
+  const tabReg = document.getElementById('gate-tab-register');
+  const btnSubmit = document.getElementById('gate-submit-btn');
+  const alertBox = document.getElementById('gate-alert');
+  if (alertBox) alertBox.classList.add('hidden');
+
+  if (mode === 'login') {
+    tabLogin.className = 'w-1/2 py-2 text-xs font-semibold rounded-full bg-emerald-400 text-slate-950 shadow transition';
+    tabReg.className = 'w-1/2 py-2 text-xs font-medium rounded-full text-slate-300 hover:text-white transition';
+    btnSubmit.textContent = 'เข้าสู่ระบบทันที';
+  } else {
+    tabReg.className = 'w-1/2 py-2 text-xs font-semibold rounded-full bg-emerald-400 text-slate-950 shadow transition';
+    tabLogin.className = 'w-1/2 py-2 text-xs font-medium rounded-full text-slate-300 hover:text-white transition';
+    btnSubmit.textContent = 'สมัครสมาชิกใหม่';
+  }
+}
+
+let isPasswordMode = false;
+
+function togglePasswordMode() {
+  isPasswordMode = !isPasswordMode;
+  const pwdContainer = document.getElementById('gate-password-container');
+  const btnToggle = document.getElementById('btn-toggle-password');
+  const btnSubmit = document.getElementById('gate-submit-btn');
+  const pwdInput = document.getElementById('gate-password');
+
+  if (isPasswordMode) {
+    if (pwdContainer) pwdContainer.classList.remove('hidden');
+    if (btnToggle) btnToggle.textContent = 'ส่งลิงก์เข้าเมลแทน (Send Magic Link)';
+    if (btnSubmit) btnSubmit.textContent = 'Continue with email & password';
+    if (pwdInput) pwdInput.focus();
+  } else {
+    if (pwdContainer) pwdContainer.classList.add('hidden');
+    if (btnToggle) btnToggle.textContent = 'ใช้รหัสผ่าน (Use Password)';
+    if (btnSubmit) btnSubmit.textContent = 'Continue with email';
+  }
+}
+
+function showGateAlert(msg, type = 'error') {
+  const alertBox = document.getElementById('gate-alert');
   if (!alertBox) return;
   alertBox.classList.remove('hidden');
   if (type === 'error') {
-    alertBox.className = 'mt-3 p-3 rounded-2xl text-xs bg-rose-500/20 text-rose-300 border border-rose-500/30 flex items-center gap-2';
+    alertBox.className = 'mt-3 p-3.5 rounded-2xl text-xs bg-rose-500/20 text-rose-300 border border-rose-500/30 flex items-center gap-2 text-left';
     alertBox.innerHTML = `<span>⚠️</span> <span>${msg}</span>`;
+  } else if (type === 'info') {
+    alertBox.className = 'mt-3 p-3.5 rounded-2xl text-xs bg-sky-500/20 text-sky-300 border border-sky-500/30 flex items-center gap-2 text-left';
+    alertBox.innerHTML = `<span>ℹ️</span> <span>${msg}</span>`;
   } else {
-    alertBox.className = 'mt-3 p-3 rounded-2xl text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-2';
+    alertBox.className = 'mt-3 p-3.5 rounded-2xl text-xs bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-2 text-left';
     alertBox.innerHTML = `<span>✅</span> <span>${msg}</span>`;
+  }
+}
+
+async function executeAuth(email, password, mode, btn, alertFn, onSuccessModalClose) {
+  btn.disabled = true;
+  btn.textContent = 'กำลังดำเนินการ...';
+
+  if (!supabaseClient) {
+    const mockUser = {
+      id: 'local-' + btoa(email).slice(0, 8),
+      email: email
+    };
+    localStorage.setItem('debtsniper_local_user', JSON.stringify(mockUser));
+    onUserLoggedIn(mockUser);
+    alertFn('เข้าสู่ระบบสำเร็จ! (โหมด Local Account)', 'success');
+    if (onSuccessModalClose) setTimeout(onSuccessModalClose, 700);
+    btn.disabled = false;
+    btn.textContent = mode === 'login' ? 'เข้าสู่ระบบทันที' : 'สมัครสมาชิกใหม่';
+    return;
+  }
+
+  try {
+    if (mode === 'login') {
+      const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      alertFn('เข้าสู่ระบบสำเร็จ! กำลังเปิดแดชบอร์ด...', 'success');
+      if (onSuccessModalClose) setTimeout(onSuccessModalClose, 600);
+    } else {
+      const { data, error } = await supabaseClient.auth.signUp({ email, password });
+      if (error) throw error;
+      if (data?.session) {
+        alertFn('สมัครสมาชิกและเข้าสู่ระบบสำเร็จ!', 'success');
+        if (onSuccessModalClose) setTimeout(onSuccessModalClose, 600);
+      } else {
+        alertFn('ลงทะเบียนสำเร็จแล้ว! ลองกดเข้าสู่ระบบ หรือเช็กอีเมลหากเปิดยืนยันตัวตนไว้', 'success');
+      }
+    }
+  } catch (err) {
+    console.warn('Auth error:', err);
+    let msg = err.message || 'เกิดข้อผิดพลาดในการเชื่อมต่อ';
+    if (msg.includes('Invalid login credentials')) {
+      msg = 'อีเมลหรือรหัสผ่านไม่ถูกต้อง (หากเพิ่งใช้งานครั้งแรก กรุณาคลิกแท็บ "สมัครสมาชิกใหม่" เพื่อตั้งรหัสผ่านก่อนนะครับ)';
+    } else if (msg.includes('Email not confirmed')) {
+      msg = 'กรุณาเปิดอีเมลเพื่อกดยืนยันตัวตน (หรือปิด Confirm Email ในหน้าเว็บ Supabase เพื่อล็อกอินได้ทันที)';
+    } else if (msg.includes('Password should be at least')) {
+      msg = 'รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษรครับ';
+    } else if (msg.includes('User already registered')) {
+      msg = 'อีเมลนี้เคยลงทะเบียนไว้แล้ว สามารถสลับไปแท็บ "เข้าสู่ระบบ" ได้เลยครับ';
+    }
+    alertFn(msg, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = mode === 'login' ? 'เข้าสู่ระบบทันที' : 'สมัครสมาชิกใหม่';
   }
 }
 
@@ -984,6 +1186,29 @@ async function handleSignOut() {
   localStorage.removeItem('debtsniper_local_user');
   onUserLoggedOut();
   alert('ออกจากระบบเรียบร้อยแล้ว');
+}
+
+async function signInWithGoogle() {
+  if (!supabaseClient) {
+    showAuthAlert('กรุณาเชื่อมต่อ Supabase ก่อนใช้งาน', 'error');
+    return;
+  }
+  try {
+    const { data, error } = await supabaseClient.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin + window.location.pathname
+      }
+    });
+    if (error) throw error;
+  } catch (err) {
+    console.warn('Google Sign In Exception:', err);
+    if (err.message && (err.message.includes('not enabled') || err.message.includes('Unsupported provider'))) {
+      showAuthAlert('ยังไม่ได้เปิด Provider Google ใน Supabase — แนะนำให้กรอก Gmail ในแท็บ "สมัครสมาชิกใหม่" ด้านบนเพื่อเริ่มใช้ได้ทันทีครับ', 'error');
+    } else {
+      showAuthAlert('Google Login: ' + (err.message || 'ไม่สามารถเชื่อมต่อได้ แนะนำให้ใช้วิธีกรอกอีเมลและรหัสผ่านด้านบนครับ'), 'error');
+    }
+  }
 }
 
 function openCloudConfigModal() {
@@ -1057,52 +1282,65 @@ window.addEventListener('DOMContentLoaded', () => {
     closeBudgetModal();
   });
 
-  document.getElementById('auth-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('auth-email').value.trim();
-    const password = document.getElementById('auth-password').value;
+  const gateAuthForm = document.getElementById('gate-auth-form');
+  if (gateAuthForm) {
+    gateAuthForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('gate-email').value.trim();
+      const password = document.getElementById('gate-password') ? document.getElementById('gate-password').value : '';
+      const btn = document.getElementById('gate-submit-btn');
 
-    const btn = document.getElementById('auth-submit-btn');
-    btn.disabled = true;
-    btn.textContent = 'กำลังดำเนินการ...';
+      if (!isPasswordMode) {
+        // Passwordless Magic Link / OTP Mode (Exact from Image 2)
+        btn.disabled = true;
+        btn.textContent = 'Sending link...';
+        showGateAlert('กำลังส่งลิงก์เข้าสู่ระบบ...', 'info');
 
-    if (!supabaseClient) {
-      // Local/Offline Account Mode
-      const mockUser = {
-        id: 'local-' + btoa(email).slice(0, 8),
-        email: email
-      };
-      localStorage.setItem('debtsniper_local_user', JSON.stringify(mockUser));
-      onUserLoggedIn(mockUser);
-      showAuthAlert('เข้าสู่ระบบสำเร็จ! (โหมด Local Account — หากต้องการ Auto-Sync ข้ามเครื่อง ให้ใส่ Supabase API ในเมนู "ตั้งค่า Cloud")', 'success');
-      setTimeout(() => closeAuthModal(), 1000);
-      btn.disabled = false;
-      return;
-    }
-
-    try {
-      if (authMode === 'login') {
-        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        showAuthAlert('เข้าสู่ระบบสำเร็จ!', 'success');
-        setTimeout(() => closeAuthModal(), 700);
-      } else {
-        const { data, error } = await supabaseClient.auth.signUp({ email, password });
-        if (error) throw error;
-        if (data?.session) {
-          showAuthAlert('สมัครสมาชิกและเข้าสู่ระบบสำเร็จ!', 'success');
-          setTimeout(() => closeAuthModal(), 700);
-        } else {
-          showAuthAlert('ลงทะเบียนเรียบร้อย! ลองกดเข้าสู่ระบบได้เลย', 'success');
+        if (!supabaseClient) {
+          const mockUser = { id: 'local-' + btoa(email).slice(0, 8), email };
+          localStorage.setItem('debtsniper_local_user', JSON.stringify(mockUser));
+          onUserLoggedIn(mockUser);
+          showGateAlert('เข้าสู่ระบบสำเร็จ! (โหมด Local)', 'success');
+          btn.disabled = false;
+          btn.textContent = 'Continue with email';
+          return;
         }
+
+        try {
+          const { data, error } = await supabaseClient.auth.signInWithOtp({
+            email,
+            options: {
+              emailRedirectTo: window.location.origin + window.location.pathname
+            }
+          });
+          if (error) throw error;
+          showGateAlert('📩 ส่งลิงก์เข้าสู่ระบบไปที่ ' + email + ' แล้ว! กรุณาเปิด Gmail แล้วคลิกลิงก์เพื่อเข้าใช้งานได้ทันทีครับ', 'success');
+        } catch (err) {
+          console.warn('Magic link error:', err);
+          showGateAlert(err.message || 'ไม่สามารถส่งลิงก์ได้ แนะนำให้กด "ใช้รหัสผ่าน" ด้านล่างครับ', 'error');
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Continue with email';
+        }
+      } else {
+        // Password Mode: try sign in, if not registered, sign up!
+        btn.disabled = true;
+        btn.textContent = 'Authenticating...';
+        await executeAuth(email, password, 'login', btn, showGateAlert, null);
       }
-    } catch (err) {
-      showAuthAlert(err.message || 'เกิดข้อผิดพลาดในการเชื่อมต่อ');
-    } finally {
-      btn.disabled = false;
-      btn.textContent = authMode === 'login' ? 'เข้าสู่ระบบทันที' : 'สมัครสมาชิกใหม่';
-    }
-  });
+    });
+  }
+
+  const modalAuthForm = document.getElementById('auth-form');
+  if (modalAuthForm) {
+    modalAuthForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('auth-email').value.trim();
+      const password = document.getElementById('auth-password').value;
+      const btn = document.getElementById('auth-submit-btn');
+      await executeAuth(email, password, authMode, btn, showAuthAlert, () => closeAuthModal());
+    });
+  }
 
   document.getElementById('cloud-config-form').addEventListener('submit', (e) => {
     e.preventDefault();

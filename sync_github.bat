@@ -24,8 +24,8 @@ git remote add origin https://github.com/sousixth/Debt-Sniper.git
 
 :: Add and commit files
 echo [*] Adding files to commit...
-git add index.html app.js manifest.json sw.js README.md .gitignore sync_github.bat
-git commit -m "feat: launch DebtSniper with iOS glassmorphism and Supabase sync"
+git add index.html app.js manifest.json sw.js README.md .gitignore .nojekyll sync_github.bat
+git commit -m "feat: complete luxury UI matching Image 2 (Auth Gate) & Image 3 (Dashboard layout with sidebar, overhead beam, 4 metrics, What Changed and Open Questions)"
 
 :: Push to GitHub
 echo [*] Pushing to GitHub (https://github.com/sousixth/Debt-Sniper.git)...
