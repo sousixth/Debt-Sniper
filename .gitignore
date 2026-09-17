@@ -1,0 +1,5 @@
+# Sensitive credentials
+db_credentials.txt
+.env
+.env.local
+*.log

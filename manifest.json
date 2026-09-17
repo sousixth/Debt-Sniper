@@ -1,0 +1,16 @@
+{
+  "name": "DebtSniper - ระบบวางแผนและบริหารจัดการหนี้",
+  "short_name": "DebtSniper",
+  "description": "ระบบวางแผนสไนเปอร์ปลดหนี้สู่ชีวิตอิสระ",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#090d16",
+  "theme_color": "#10b981",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%230f172a' stroke='%2310b981' stroke-width='8'/><circle cx='50' cy='50' r='20' fill='none' stroke='%2310b981' stroke-width='4'/><line x1='50' y1='5' x2='50' y2='95' stroke='%2310b981' stroke-width='4'/><line x1='5' y1='50' x2='95' y2='50' stroke='%2310b981' stroke-width='4'/></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
